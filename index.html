@@ -1,32 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Markdown Previewer</title>
-	<link rel="stylesheet" href="style.css">
-	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <title>Markdown Editor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="container">
-		<div class="editor">
-			<textarea id="markdown-input"></textarea>
-		</div>
-		<div class="preview">
-			<div id="markdown-output"></div>
-		</div>
-	</div>
-
-	<script>
-		// Get the input and output elements
-		const markdownInput = document.getElementById('markdown-input');
-		const markdownOutput = document.getElementById('markdown-output');
-
-		// Update the preview whenever the input changes
-		markdownInput.addEventListener('input', () => {
-			const markdownText = markdownInput.value;
-			const htmlText = marked(markdownText);
-			markdownOutput.innerHTML = htmlText;
-		});
-	</script>
+  <div class="container">
+    <div class="editor-container">
+      <textarea id="editor"></textarea>
+    </div>
+    <div class="preview-container">
+      <div id="preview"></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
