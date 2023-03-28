@@ -1,0 +1,28 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
+}
+
+.editor {
+	flex: 1;
+	background-color: lightgray;
+	padding: 10px;
+}
+
+.preview {
+	flex: 1;
+	padding: 10px;
+}
+
+textarea {
+	width: 100%;
+	height: 100%;
+	border: none;
+	resize: none;
+}
+
+#markdown-output {
+	overflow-y: auto;
+	max-height: 100%;
+}
