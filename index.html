@@ -56,7 +56,7 @@
 		body {
 			font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 			line-height: 1.5;
-			overflow: hidden;
+			overflow: scroll;
 		}
 
 		/* Set header style */
@@ -72,7 +72,7 @@
 
 		header h1 {
 			padding-left: 20px;
-			margin-right: 50%;
+			margin-right: 70%;
 			font-size: 20px !important;
 		}
 
@@ -94,6 +94,10 @@
 			width: 50%;
 		}
 
+		.CodeMirror-selectionBackground {
+			background-color: yellow !important;
+		}
+
 		/* Style for the preview */
 		#preview {
 			height: 100vh;
@@ -108,8 +112,8 @@
 		/* Style for highlighted code */
 		pre code {
 			background-color: var(--code-bg-color);
-			border-radius: 4px;
 			padding: 4px;
+			border-radius: 4px;
 		}
 
 		/* Highlight color for selected text */
@@ -123,10 +127,6 @@
 			border-left: 2px solid var(--editor-text-color);
 			width: 8px;
 		}  
-
-		pre code {
-			border-radius: 8px;
-		}
 
 		/* Style the scrollbar */
 		::-webkit-scrollbar {
@@ -144,12 +144,26 @@
 			background: rgba(0,0,0,0.1);
 		}
 
+		header button {
+			background-color: #ffffff;
+			border: none;
+			width: 5rem;
+			height: 3.5rem;
+			font-size: 16px;
+			cursor: pointer;
+			transition: all 0.2s ease-in-out;
+		}
+
+		header button:hover {
+			background-color: #313131;
+			color: #ffffff;
+		}
+
 		button {
 			background-color: #ffffff;
 			border: none;
-			border-radius: 8px;
-			width: 5rem;
-			height: 10rem;
+			width: 3rem;
+			height: 2rem;
 			font-size: 16px;
 			cursor: pointer;
 			transition: all 0.2s ease-in-out;
@@ -159,6 +173,46 @@
 			background-color: #313131;
 			color: #ffffff;
 		}
+
+		blockquote {
+			padding-left: 10px;
+			background-color: #f3f3f3;
+			border-left: 4px solid #c4c4c4;
+		}
+
+		.fa-github {
+			font-size: 1.5rem;
+		}
+
+		.markdown-toolbar {
+		padding-left: 50px;
+		}
+
+		a {
+			text-decoration: none;
+			color: #0d74fa;
+			transition: all 0.2s ease-in-out;
+		}
+
+		a:hover {
+			color: #2e7add;
+			text-decoration: underline;
+		}
+		
+		ol {
+			margin-left: 30px !important;
+		}
+		ol li::marker {
+			color: #979797;
+		}
+
+		ul {
+			margin-left: 30px !important;
+		}
+
+		ul li::marker {
+			color: #979797;
+		}
 	</style>
 </head>
 <body>
@@ -166,7 +220,24 @@
 		<h1>Markdown Editor</h1>
 		<button onclick="download()"><i class="fa fa-download"></i></button>
 		<button onclick="upload()"><i class="fa fa-upload"></i></button>
+		<a id="GithubLink" href="https://github.com/LyubomirT/markdown-editor" target="_blank"><button id="flexer"><i class="fa fa-github"></i></button></a>
 	</header>
+	<div class="markdown-toolbar">
+		<button onclick="bold()"><i class="fa fa-bold"></i></button>
+		<button onclick="italic()"><i class="fa fa-italic"></i></button>
+		<button onclick="code()"><i class="fa fa-code"></i></button>
+		<button onclick="quote()"><i class="fa fa-quote-left"></i></button>
+		<button onclick="link()"><i class="fa fa-link"></i></button>
+		<button onclick="image()"><i class="fa fa-image"></i></button>
+		<button onclick="table()"><i class="fa fa-table"></i></button>
+		<button onclick="list()"><i class="fa fa-list-ul"></i></button>
+		<button onclick="bullet()"><i class="fa fa-list-ol"></i></button>
+		<button onclick="indent()"><i class="fa fa-indent"></i></button>
+		<button onclick="outdent()"><i class="fa fa-outdent"></i></button>
+		<button onclick="undo()"><i class="fa fa-undo"></i></button>
+		<button onclick="redo()"><i class="fa fa-repeat"></i></button>
+		<button onclick="editor_clear()"><i class="fa fa-eraser"></i></button>
+	</div>
 	<div class="code-editor">
 		<textarea id="editor"></textarea>
 		<div id="preview"></div>
@@ -181,7 +252,8 @@
 			rulers: [{column: 120, color: "#ddd"}],
 			extraKeys: {"Ctrl-Space": "autocomplete"},
 			viewportMargin: Infinity,
-			lineWrapping: true
+			lineWrapping: true,
+			styleSelectedText: { css: "background-color: yellow" }
 		});
 
     editor.toggleOverwrite(false);
@@ -237,6 +309,156 @@
 			reader.readAsText(file.files[0]);
 		}
 	}
+
+	function code() {
+		var selection = editor.getSelection(); // get the selected text
+		if (selection.includes('```')) { // if the selection contains a code block
+			var replacement = selection.replace('```', '').replace('\n```', ''); // remove the code block
+		} else { // otherwise
+			var replacement = '```\n' + selection + '\n```'; // add the code block
+		}
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function quote() {
+		var selection = editor.getSelection(); // get the selected text
+		if (selection.includes('>')) { // if the selection contains a quote
+			var replacement = selection.replace('>', ''); // remove them
+		} else { // otherwise
+			var replacement = '>' + selection; // add them
+		}
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function link() {
+		var selection = editor.getSelection(); // get the selected text
+		var pattern = /\[(.*?)\]\((.*?)\)/g; // match text in brackets followed by a link in parentheses
+		var match = pattern.exec(selection); // attempt to match the pattern
+		if (match) { // if a match is found
+			var replacement = selection.replace(pattern, "$2 ($1)"); // swap the text and link
+		} else { // otherwise
+			var link = prompt('Enter the link:'); // prompt the user for a link
+			if (link) { // if a link was provided
+			var text = prompt('Enter the text:', selection || ''); // prompt the user for text if not already selected
+			var replacement = '[' + (text || link) + '](' + link + ')'; // create the link in markdown format
+			}
+		}
+		if (replacement) { // if a replacement was created
+			editor.replaceSelection(replacement); // replace the selection with the new text
+		}
+	}
+
+	function image() {
+		var selection = editor.getSelection(); // get the selected text
+		var pattern = /\!\[(.*?)\]\((.*?)\)/g; // match alt text in brackets followed by a link in parentheses with an exclamation mark at the start
+		var match = pattern.exec(selection); // attempt to match the pattern
+		if (match) { // if a match is found
+			var replacement = selection.replace(pattern, "![$1](" + match[2] + ")"); // change the image URL while preserving the alt text
+		} else { // otherwise
+			var imageURL = prompt('Enter the image URL:'); // prompt the user for an image URL
+			if (imageURL) { // if an image URL was provided
+			var altText = prompt('Enter the alt text:', selection || ''); // prompt the user for alt text if not already selected
+			var replacement = '![' + (altText || '') + '](' + imageURL + ')'; // create the image markdown
+			}
+		}
+		if (replacement) { // if a replacement was created
+			editor.replaceSelection(replacement); // replace the selection with the new text
+		}
+	}
+
+	function table() {
+		var rows = prompt('Enter the number of rows:');
+		var columns = prompt('Enter the number of columns:');
+		if (rows && columns && parseInt(rows) && parseInt(columns)) { // if valid inputs were provided
+			var table = '|';
+			for (var i = 1; i <= columns; i++) { // create the table headers
+			table += 'Header ' + i + '|';
+			}
+			table += '\n|';
+			for (var i = 1; i <= columns; i++) { // add the column separators
+			table += '---|';
+			}
+			for (var i = 1; i <= rows; i++) { // add the rows
+			table += '\n|';
+			for (var j = 1; j <= columns; j++) {
+				table += 'Cell ' + i + ',' + j + '|';
+			}
+			}
+			editor.replaceSelection(table); // replace the selection with the new table
+		}
+	}
+
+	function list() {
+		var selection = editor.getSelection(); // get the selected text
+		var pattern = /^[\*\-] /gm; // match each line that starts with an asterisk or a hyphen
+		if (selection.match(pattern)) { // if the selection is a list
+			var replacement = selection.replace(pattern, ''); // remove the asterisks or hyphens
+		} else { // otherwise
+			var lines = selection.split('\n'); // split the selection into an array of lines
+			var replacement = lines.map(line => `* ${line}`).join('\n'); // add an asterisk to the start of each line
+		}
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function bullet() {
+		var selection = editor.getSelection(); // get the selected text
+		var pattern = /^\d+\. /gm; // match each line that starts with a number followed by a period and a space
+		if (selection.match(pattern)) { // if the selection is a numbered list
+			var replacement = selection.replace(pattern, ''); // remove the numbers and periods
+		} else { // otherwise
+			var lines = selection.split('\n'); // split the selection into an array of lines
+			var replacement = lines.map((line, index) => `${index + 1}. ${line}`).join('\n'); // add a number and a period to the start of each line
+		}
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function indent() {
+		var selection = editor.getSelection(); // get the selected text
+		var lines = selection.split('\n'); // split the selection into an array of lines
+		var replacement = lines.map(line => `  ${line}`).join('\n'); // add two spaces to the start of each line
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function outdent() {
+		var selection = editor.getSelection(); // get the selected text
+		var lines = selection.split('\n'); // split the selection into an array of lines
+		var replacement = lines.map(line => line.replace(/^  /, '')).join('\n'); // remove two spaces from the start of each line
+		editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function undo() {
+		document.scrollTop = 0; // scroll to the top
+		editor.undo(); // undo last edit
+	}
+
+	function redo() {
+		editor.redo(); // redo last edit
+	}
+
+	function editor_clear() {
+		editor.setValue("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"); // clear the editor
+	}
+
+	function bold() {
+	var selection = editor.getSelection(); // get the selected text
+	if (selection.includes('**')) { // if the selection contains bold formatting
+		var replacement = selection.replace(/\*\*/g, ''); // remove bold formatting
+	} else { // otherwise
+		var replacement = '**' + selection + '**'; // add bold formatting
+	}
+	editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
+	function italic() {
+	var selection = editor.getSelection(); // get the selected text
+	if (selection.includes('_')) { // if the selection contains italics formatting
+		var replacement = selection.replace(/_/g, ''); // remove italics formatting
+	} else { // otherwise
+		var replacement = '_' + selection + '_'; // add italics formatting
+	}
+	editor.replaceSelection(replacement); // replace the selection with the new text
+	}
+
 	</script>
 </body>
 </html>
