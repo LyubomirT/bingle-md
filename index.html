@@ -22,6 +22,8 @@
 	<!-- Import highlight.js library -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
+	<!-- Import font awesome library -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<script>
 		hljs.highlightAll();
@@ -53,7 +55,6 @@
 		/* Set font family and size */
 		body {
 			font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-			font-size: 16px;
 			line-height: 1.5;
 			overflow: hidden;
 		}
@@ -67,6 +68,12 @@
 			display: flex;
 			align-items: center;
 			padding: 0 16px;
+		}
+
+		header h1 {
+			padding-left: 20px;
+			margin-right: 50%;
+			font-size: 20px !important;
 		}
 
 		/* Set code editor and preview size */
@@ -136,11 +143,29 @@
 		::-webkit-scrollbar-track {
 			background: rgba(0,0,0,0.1);
 		}
+
+		button {
+			background-color: #ffffff;
+			border: none;
+			border-radius: 8px;
+			width: 5rem;
+			height: 10rem;
+			font-size: 16px;
+			cursor: pointer;
+			transition: all 0.2s ease-in-out;
+		}
+
+		button:hover {
+			background-color: #313131;
+			color: #ffffff;
+		}
 	</style>
 </head>
 <body>
 	<header>
 		<h1>Markdown Editor</h1>
+		<button onclick="download()"><i class="fa fa-download"></i></button>
+		<button onclick="upload()"><i class="fa fa-upload"></i></button>
 	</header>
 	<div class="code-editor">
 		<textarea id="editor"></textarea>
@@ -190,6 +215,28 @@
 	editor.scrollTo(editorScrollInfo.left, previewContainer.scrollTop);
 	});
 
+	function download() {
+		content = editor.getValue();
+		var a = document.createElement('a');
+  		var blob = new Blob([content], {'type':'text/markdown'});
+		a.href = window.URL.createObjectURL(blob);
+		a.download = 'markdown-text.md';
+		a.click();
+		a.remove();
+	}
+
+	function upload() {
+		var file = document.createElement('input');
+		file.type = 'file';
+		file.click();
+		file.onchange = function() {
+			var reader = new FileReader();
+			reader.onload = function() {
+				editor.setValue(reader.result);
+			}
+			reader.readAsText(file.files[0]);
+		}
+	}
 	</script>
 </body>
 </html>
