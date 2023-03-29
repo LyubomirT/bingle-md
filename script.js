@@ -1,12 +1,8 @@
-const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
+const md = window.markdownit();
+const input = document.getElementById("input");
+const output = document.getElementById("output");
 
-function updatePreview() {
-  const markdown = editor.value;
-  const html = marked.parse(markdown);
-  preview.innerHTML = html;
-}
-
-editor.addEventListener('input', updatePreview);
-
-updatePreview();
+input.addEventListener("input", function() {
+  const result = md.render(input.value);
+  output.innerHTML = result;
+});

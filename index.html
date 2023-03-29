@@ -1,21 +1,195 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Markdown Editor</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+	<title>Markdown Editor</title>
+	<!-- Import stylesheet for CodeMirror -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/theme/neo.min.css">
+	<!-- Import library for parsing markdown -->
+	<script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+	<!-- Import CodeMirror library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/markdown/markdown.min.js"></script>
+	<!-- Import add-on to show preview on right -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/display/rulers.min.js"></script>
+	<!-- Import add-on for live previews -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/scroll/simplescrollbars.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/selection/selection-pointer.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/search/search.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/search/searchcursor.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/edit/closebrackets.min.js"></script>
+
+	<!-- Import highlight.js library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
+
+	<script>
+		hljs.highlightAll();
+	</script>
+	
+	<style>
+      /* Default colors */
+		html {
+			overflow: hidden;
+		}
+
+		:root {
+			--editor-bg-color: #F1F5F9;
+			--editor-text-color: #1E293B;
+			--preview-bg-color: #F9FAFB;
+			--preview-text-color: #4B5563;
+			--code-bg-color: #EDF2F7;
+			--highlight-color: #C7D2FE;
+		}
+
+		/* Remove default margin and padding */
+		* {
+			margin: 0;
+			padding: 0;
+			scrollbar-width: thin;
+  			scrollbar-color: rgba(0,0,0,0.2) rgba(0,0,0,0.1);
+		}
+
+		/* Set font family and size */
+		body {
+			font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			overflow: hidden;
+		}
+
+		/* Set header style */
+		header {
+			background-color: var(--editor-bg-color);
+			color: var(--editor-text-color);
+			height: 56px;
+			font-size: small;
+			display: flex;
+			align-items: center;
+			padding: 0 16px;
+		}
+
+		/* Set code editor and preview size */
+		.code-editor {
+			display: flex;
+			height: calc(100vh - 56px);
+		}
+
+		/* Style for the editor */
+		.CodeMirror {
+			height: 100vh;
+			padding: 16px;
+			font-size: 16px;
+			font-family: monospace;
+			background-color: var(--editor-bg-color);
+			color: var(--editor-text-color);
+			resize: none;
+			width: 50%;
+		}
+
+		/* Style for the preview */
+		#preview {
+			height: 100vh;
+			overflow-y: scroll;
+			padding: 16px;
+			background-color: var(--preview-bg-color);
+			color: var(--preview-text-color);
+			width: 50%;
+			word-wrap: break-word;
+		}
+
+		/* Style for highlighted code */
+		pre code {
+			background-color: var(--code-bg-color);
+			border-radius: 4px;
+			padding: 4px;
+		}
+
+		/* Highlight color for selected text */
+		::selection {
+			background-color: var(--highlight-color);
+		}
+
+		/* Blinking cursor style */
+		.CodeMirror .CodeMirror-cursor {
+			animation: blink 1s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+			border-left: 2px solid var(--editor-text-color);
+			width: 8px;
+		}  
+
+		pre code {
+			border-radius: 8px;
+		}
+
+		/* Style the scrollbar */
+		::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		/* Style the scrollbar thumb */
+		::-webkit-scrollbar-thumb {
+			background: rgba(0,0,0,0.2);
+			border-radius: 10px;
+		}
+
+		/* Style the scrollbar track */
+		::-webkit-scrollbar-track {
+			background: rgba(0,0,0,0.1);
+		}
+	</style>
 </head>
 <body>
-  <div class="container">
-    <div class="editor-container">
-      <textarea id="editor"></textarea>
-    </div>
-    <div class="preview-container">
-      <div id="preview"></div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="script.js"></script>
+	<header>
+		<h1>Markdown Editor</h1>
+	</header>
+	<div class="code-editor">
+		<textarea id="editor"></textarea>
+		<div id="preview"></div>
+	</div>
+
+	<script>
+		const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+			lineNumbers: true,
+			mode: "markdown",
+			theme: "neo",
+			autoCloseBrackets: true,
+			rulers: [{column: 120, color: "#ddd"}],
+			extraKeys: {"Ctrl-Space": "autocomplete"},
+			viewportMargin: Infinity,
+			lineWrapping: true
+		});
+
+    editor.toggleOverwrite(false);
+    editor.setValue("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
+	editor.on('change', () => {
+		const md = new markdownit();
+		const preview = document.getElementById('preview');
+		preview.innerHTML = md.render(editor.getValue());
+		const codeBlocks = preview.querySelectorAll('pre code');
+		codeBlocks.forEach((block) => {
+			hljs.highlightBlock(block);
+		});
+	});
+
+	editor.on('scroll', () => {
+	const previewContainer = document.getElementById('preview');
+	const editorScrollInfo = editor.getScrollInfo();
+	previewContainer.scrollTo(editorScrollInfo.left, editorScrollInfo.top);
+	});
+
+	const md = new markdownit();
+	const preview = document.getElementById('preview');
+	preview.innerHTML = md.render(editor.getValue());
+
+	// Add event listener to preview container for scroll event
+	const previewContainer = document.getElementById('preview');
+	previewContainer.addEventListener('scroll', () => {
+	const editorScrollInfo = editor.getScrollInfo();
+	// Update editor's scroll position to match preview container's scroll position
+	editor.scrollTo(editorScrollInfo.left, previewContainer.scrollTop);
+	});
+
+	</script>
 </body>
 </html>
