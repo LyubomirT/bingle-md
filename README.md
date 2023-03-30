@@ -1,6 +1,6 @@
 # Bingle Markdown Editor
 
-Bingle is a web app that allows you to create and edit markdown files with ease. You can use it to write READMEs, blog posts, documentation, and more! The website: 
+Bingle is a web app that allows you to create and edit markdown files with ease. You can use it to write READMEs, blog posts, documentation, and more! The website can be found [here](lyubomirt.github.io/bingle-md/)
 
 ## Features
 
