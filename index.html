@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Markdown Editor</title>
+	<title>Bingle Markdown Editor</title>
 	<!-- Import stylesheet for CodeMirror -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/theme/neo.min.css">
@@ -23,7 +23,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
 	<!-- Import font awesome library -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
 
 	<script>
 		hljs.highlightAll();
@@ -32,7 +32,7 @@
 	<style>
       /* Default colors */
 		html {
-			overflow: hidden;
+			overflow-y: hidden;
 		}
 
 		:root {
@@ -56,7 +56,7 @@
 		body {
 			font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 			line-height: 1.5;
-			overflow: scroll;
+			overflow-y: hidden;
 		}
 
 		/* Set header style */
@@ -72,12 +72,13 @@
 
 		header h1 {
 			padding-left: 20px;
-			margin-right: 70%;
+			margin-right: 60%;
 			font-size: 20px !important;
 		}
 
 		/* Set code editor and preview size */
 		.code-editor {
+			overflow-y: hidden;
 			display: flex;
 			height: calc(100vh - 56px);
 		}
@@ -92,16 +93,14 @@
 			color: var(--editor-text-color);
 			resize: none;
 			width: 50%;
-		}
-
-		.CodeMirror-selectionBackground {
-			background-color: yellow !important;
+			overflow-y: scroll;
+			max-height: 85vh;
 		}
 
 		/* Style for the preview */
 		#preview {
-			height: 100vh;
-			overflow-y: scroll;
+			overflow-y: auto;
+			max-height: 85vh;
 			padding: 16px;
 			background-color: var(--preview-bg-color);
 			color: var(--preview-text-color);
@@ -114,6 +113,10 @@
 			background-color: var(--code-bg-color);
 			padding: 4px;
 			border-radius: 4px;
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+			font-family: monospace;
+			font-weight: normal;
 		}
 
 		/* Highlight color for selected text */
@@ -136,7 +139,6 @@
 		/* Style the scrollbar thumb */
 		::-webkit-scrollbar-thumb {
 			background: rgba(0,0,0,0.2);
-			border-radius: 10px;
 		}
 
 		/* Style the scrollbar track */
@@ -159,7 +161,15 @@
 			color: #ffffff;
 		}
 
-		button {
+		code {
+			background-color: #dadada;
+			font-weight: bold;
+			border-radius: 3px;
+			font-family: monospace;
+		}
+
+		.markdown-toolbar button {
+			border-radius: 5px;
 			background-color: #ffffff;
 			border: none;
 			width: 3rem;
@@ -169,7 +179,7 @@
 			transition: all 0.2s ease-in-out;
 		}
 
-		button:hover {
+		.markdown-toolbar button:hover {
 			background-color: #313131;
 			color: #ffffff;
 		}
@@ -178,6 +188,8 @@
 			padding-left: 10px;
 			background-color: #f3f3f3;
 			border-left: 4px solid #c4c4c4;
+			margin-top: 1rem;
+			margin-bottom: 1rem;
 		}
 
 		.fa-github {
@@ -186,6 +198,8 @@
 
 		.markdown-toolbar {
 		padding-left: 50px;
+		padding-top: 10px;
+		padding-bottom: 10px;
 		}
 
 		a {
@@ -200,48 +214,116 @@
 		}
 		
 		ol {
+			margin-top: 1rem;
 			margin-left: 30px !important;
+			margin-bottom: 1rem;
 		}
 		ol li::marker {
 			color: #979797;
 		}
 
 		ul {
+			margin-top: 1rem;
 			margin-left: 30px !important;
+			margin-bottom: 1rem;
 		}
 
 		ul li::marker {
 			color: #979797;
 		}
+
+
+		#smaller_header {
+			font-size: 0.8rem;
+		}
+
+		.fa-html5 {
+			font-size: 1.5rem;
+		}
+		
+		.fa-markdown {
+			font-size: 1.3rem;
+		}
+
+		.fa-upload {
+			font-size: 1.2rem;
+		}
+
+		table {
+		border-collapse: collapse;
+		border: 1px solid black;
+		min-width: 320px;
+		text-align: center;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		}
+
+		table td {
+			height: 30px;
+			border: 1px solid black;
+		}
+
+		table th {
+			border: 1px solid black;
+			width: 80px;
+		}
+
+		table thead {
+			font-size: 16px;
+		}
+
+		table tbody {
+			font-size: 14px;
+		}
+
+		img {
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+			object-fit: contain;
+			max-width: 600px;
+			max-height: 600px;
+			border-radius: 5px;
+		}
+
+		preview h1, h2, h3, h4, h5, h6 {
+			margin-top: 1.2rem !important;
+		}
+
+		hr {
+			margin-bottom: 1rem;
+		}
 	</style>
 </head>
 <body>
-	<header>
-		<h1>Markdown Editor</h1>
-		<button onclick="download()"><i class="fa fa-download"></i></button>
-		<button onclick="upload()"><i class="fa fa-upload"></i></button>
-		<a id="GithubLink" href="https://github.com/LyubomirT/markdown-editor" target="_blank"><button id="flexer"><i class="fa fa-github"></i></button></a>
-	</header>
-	<div class="markdown-toolbar">
-		<button onclick="bold()"><i class="fa fa-bold"></i></button>
-		<button onclick="italic()"><i class="fa fa-italic"></i></button>
-		<button onclick="code()"><i class="fa fa-code"></i></button>
-		<button onclick="quote()"><i class="fa fa-quote-left"></i></button>
-		<button onclick="link()"><i class="fa fa-link"></i></button>
-		<button onclick="image()"><i class="fa fa-image"></i></button>
-		<button onclick="table()"><i class="fa fa-table"></i></button>
-		<button onclick="list()"><i class="fa fa-list-ul"></i></button>
-		<button onclick="bullet()"><i class="fa fa-list-ol"></i></button>
-		<button onclick="indent()"><i class="fa fa-indent"></i></button>
-		<button onclick="outdent()"><i class="fa fa-outdent"></i></button>
-		<button onclick="undo()"><i class="fa fa-undo"></i></button>
-		<button onclick="redo()"><i class="fa fa-repeat"></i></button>
-		<button onclick="editor_clear()"><i class="fa fa-eraser"></i></button>
-	</div>
-	<div class="code-editor">
-		<textarea id="editor"></textarea>
-		<div id="preview"></div>
-	</div>
+		<header>
+			<h1>Bingle Markdown Editor</h1>
+			<button onclick="download()"><i class="fa-brands fa-markdown"></i></button>
+			<button onclick="download_html()"><i class="fa-brands fa-html5"></i></button>
+			<button onclick="upload()"><i class="fas fa-upload"></i></button>
+			<a id="GithubLink" href="https://github.com/LyubomirT/markdown-editor" target="_blank"><button id="flexer"><i class="fa-brands fa-github"></i></button></a>
+		</header>
+		<div class="markdown-toolbar">
+			<button onclick="bold()"><i class="fas fa-bold"></i></button>
+			<button onclick="italic()"><i class="fas fa-italic"></i></button>
+			<button onclick="header_bigger()"><i class="fas fa-header"></i></button>
+			<button onclick="header_smaller()"><i id="smaller_header" class="fas fa-header"></i></button>
+			<button onclick="code()"><i class="fas fa-code"></i></button>
+			<button onclick="quote()"><i class="fas fa-quote-left"></i></button>
+			<button onclick="link()"><i class="fas fa-link"></i></button>
+			<button onclick="image()"><i class="fas fa-image"></i></button>
+			<button onclick="table()"><i class="fas fa-table"></i></button>
+			<button onclick="list()"><i class="fas fa-list-ul"></i></button>
+			<button onclick="bullet()"><i class="fas fa-list-ol"></i></button>
+			<button onclick="indent()"><i class="fas fa-indent"></i></button>
+			<button onclick="outdent()"><i class="fas fa-outdent"></i></button>
+			<button onclick="undo()"><i class="fas fa-undo"></i></button>
+			<button onclick="redo()"><i class="fas fa-redo"></i></button>
+			<button onclick="editor_clear()"><i class="fas fa-eraser"></i></button>
+		</div>
+		<div class="code-editor">
+			<textarea id="editor"></textarea>
+			<div id="preview"></div>
+		</div>
 
 	<script>
 		const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
@@ -257,9 +339,14 @@
 		});
 
     editor.toggleOverwrite(false);
-    editor.setValue("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	if (localStorage.getItem('markdown') != null) {
+		editor.setValue(localStorage.getItem('markdown'));
+	} else {
+		editor.setValue("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	}
 
 	editor.on('change', () => {
+		localStorage.setItem('markdown', editor.getValue());
 		const md = new markdownit();
 		const preview = document.getElementById('preview');
 		preview.innerHTML = md.render(editor.getValue());
@@ -267,6 +354,16 @@
 		codeBlocks.forEach((block) => {
 			hljs.highlightBlock(block);
 		});
+		var headings = preview.querySelectorAll("h1, h2");
+
+		for (var i = 0; i < headings.length; i++) {
+		var hr = document.createElement("hr");
+		var nextSibling = headings[i].nextSibling;
+		while (nextSibling && nextSibling.nodeType !== Node.TEXT_NODE && nextSibling.nodeType !== Node.ELEMENT_NODE) {
+			nextSibling = nextSibling.nextSibling;
+		}
+		headings[i].parentNode.insertBefore(hr, nextSibling);
+		}
 	});
 
 	editor.on('scroll', () => {
@@ -279,11 +376,9 @@
 	const preview = document.getElementById('preview');
 	preview.innerHTML = md.render(editor.getValue());
 
-	// Add event listener to preview container for scroll event
 	const previewContainer = document.getElementById('preview');
 	previewContainer.addEventListener('scroll', () => {
 	const editorScrollInfo = editor.getScrollInfo();
-	// Update editor's scroll position to match preview container's scroll position
 	editor.scrollTo(editorScrollInfo.left, previewContainer.scrollTop);
 	});
 
@@ -293,6 +388,16 @@
   		var blob = new Blob([content], {'type':'text/markdown'});
 		a.href = window.URL.createObjectURL(blob);
 		a.download = 'markdown-text.md';
+		a.click();
+		a.remove();
+	}
+
+	function download_html() {
+		content = preview.innerHTML;
+		var a = document.createElement('a');
+  		var blob = new Blob([content], {'type':'text/html'});
+		a.href = window.URL.createObjectURL(blob);
+		a.download = 'markdown-text.html';
 		a.click();
 		a.remove();
 	}
@@ -311,128 +416,127 @@
 	}
 
 	function code() {
-		var selection = editor.getSelection(); // get the selected text
-		if (selection.includes('```')) { // if the selection contains a code block
-			var replacement = selection.replace('```', '').replace('\n```', ''); // remove the code block
-		} else { // otherwise
-			var replacement = '```\n' + selection + '\n```'; // add the code block
+		var selection = editor.getSelection();
+		if (selection.includes('```')) {
+			var replacement = selection.replace('```', '').replace('\n```', '');
+		} else {
+			var replacement = '```\n' + selection + '\n```';
 		}
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		editor.replaceSelection(replacement);
 	}
 
 	function quote() {
-		var selection = editor.getSelection(); // get the selected text
-		if (selection.includes('>')) { // if the selection contains a quote
-			var replacement = selection.replace('>', ''); // remove them
-		} else { // otherwise
-			var replacement = '>' + selection; // add them
+		var selection = editor.getSelection();
+		if (selection.includes('>')) {
+			var replacement = selection.replace('>', '');
+		} else {
+			var replacement = '>' + selection;
 		}
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		editor.replaceSelection(replacement);
 	}
 
 	function link() {
-		var selection = editor.getSelection(); // get the selected text
-		var pattern = /\[(.*?)\]\((.*?)\)/g; // match text in brackets followed by a link in parentheses
-		var match = pattern.exec(selection); // attempt to match the pattern
-		if (match) { // if a match is found
-			var replacement = selection.replace(pattern, "$2 ($1)"); // swap the text and link
-		} else { // otherwise
-			var link = prompt('Enter the link:'); // prompt the user for a link
-			if (link) { // if a link was provided
-			var text = prompt('Enter the text:', selection || ''); // prompt the user for text if not already selected
-			var replacement = '[' + (text || link) + '](' + link + ')'; // create the link in markdown format
+		var selection = editor.getSelection();
+		var pattern = /\[(.*?)\]\((.*?)\)/g;
+		var match = pattern.exec(selection);
+		if (match) {
+			var replacement = selection.replace(pattern, "$2 ($1)");
+		} else {
+			var link = prompt('Enter the link:');
+			if (link) { 
+			var text = prompt('Enter the text:', selection || '');
+			var replacement = '[' + (text || link) + '](' + link + ')';
 			}
 		}
-		if (replacement) { // if a replacement was created
-			editor.replaceSelection(replacement); // replace the selection with the new text
+		if (replacement) {
+			editor.replaceSelection(replacement);
 		}
 	}
 
 	function image() {
-		var selection = editor.getSelection(); // get the selected text
-		var pattern = /\!\[(.*?)\]\((.*?)\)/g; // match alt text in brackets followed by a link in parentheses with an exclamation mark at the start
-		var match = pattern.exec(selection); // attempt to match the pattern
-		if (match) { // if a match is found
-			var replacement = selection.replace(pattern, "![$1](" + match[2] + ")"); // change the image URL while preserving the alt text
-		} else { // otherwise
-			var imageURL = prompt('Enter the image URL:'); // prompt the user for an image URL
-			if (imageURL) { // if an image URL was provided
-			var altText = prompt('Enter the alt text:', selection || ''); // prompt the user for alt text if not already selected
-			var replacement = '![' + (altText || '') + '](' + imageURL + ')'; // create the image markdown
+		var selection = editor.getSelection();
+		var pattern = /\!\[(.*?)\]\((.*?)\)/g;
+		var match = pattern.exec(selection);
+		if (match) {
+			var replacement = selection.replace(pattern, "![$1](" + match[2] + ")");
+		} else {
+			var imageURL = prompt('Enter the image URL:');
+			if (imageURL) {
+			var altText = prompt('Enter the alt text:', selection || '');
+			var replacement = '![' + (altText || '') + '](' + imageURL + ')';
 			}
 		}
-		if (replacement) { // if a replacement was created
-			editor.replaceSelection(replacement); // replace the selection with the new text
+		if (replacement) {
+			editor.replaceSelection(replacement);
 		}
 	}
 
 	function table() {
 		var rows = prompt('Enter the number of rows:');
 		var columns = prompt('Enter the number of columns:');
-		if (rows && columns && parseInt(rows) && parseInt(columns)) { // if valid inputs were provided
+		if (rows && columns && parseInt(rows) && parseInt(columns)) { 
 			var table = '|';
-			for (var i = 1; i <= columns; i++) { // create the table headers
+			for (var i = 1; i <= columns; i++) { 
 			table += 'Header ' + i + '|';
 			}
 			table += '\n|';
-			for (var i = 1; i <= columns; i++) { // add the column separators
+			for (var i = 1; i <= columns; i++) {
 			table += '---|';
 			}
-			for (var i = 1; i <= rows; i++) { // add the rows
+			for (var i = 1; i <= rows; i++) {
 			table += '\n|';
 			for (var j = 1; j <= columns; j++) {
 				table += 'Cell ' + i + ',' + j + '|';
 			}
 			}
-			editor.replaceSelection(table); // replace the selection with the new table
+			editor.replaceSelection(table);
 		}
 	}
 
 	function list() {
-		var selection = editor.getSelection(); // get the selected text
-		var pattern = /^[\*\-] /gm; // match each line that starts with an asterisk or a hyphen
-		if (selection.match(pattern)) { // if the selection is a list
-			var replacement = selection.replace(pattern, ''); // remove the asterisks or hyphens
-		} else { // otherwise
-			var lines = selection.split('\n'); // split the selection into an array of lines
-			var replacement = lines.map(line => `* ${line}`).join('\n'); // add an asterisk to the start of each line
+		var selection = editor.getSelection();
+		var pattern = /^[\*\-] /gm;
+		if (selection.match(pattern)) {
+			var replacement = selection.replace(pattern, '');
+		} else {
+			var lines = selection.split('\n');
+			var replacement = lines.map(line => `* ${line}`).join('\n');
 		}
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		editor.replaceSelection(replacement);
 	}
 
 	function bullet() {
-		var selection = editor.getSelection(); // get the selected text
-		var pattern = /^\d+\. /gm; // match each line that starts with a number followed by a period and a space
-		if (selection.match(pattern)) { // if the selection is a numbered list
-			var replacement = selection.replace(pattern, ''); // remove the numbers and periods
-		} else { // otherwise
-			var lines = selection.split('\n'); // split the selection into an array of lines
-			var replacement = lines.map((line, index) => `${index + 1}. ${line}`).join('\n'); // add a number and a period to the start of each line
+		var selection = editor.getSelection();
+		var pattern = /^\d+\. /gm;
+		if (selection.match(pattern)) {
+			var replacement = selection.replace(pattern, '');
+		} else {
+			var lines = selection.split('\n');
+			var replacement = lines.map((line, index) => `${index + 1}. ${line}`).join('\n');
 		}
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		editor.replaceSelection(replacement);
 	}
 
 	function indent() {
-		var selection = editor.getSelection(); // get the selected text
-		var lines = selection.split('\n'); // split the selection into an array of lines
-		var replacement = lines.map(line => `  ${line}`).join('\n'); // add two spaces to the start of each line
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		var selection = editor.getSelection();
+		var lines = selection.split('\n');
+		var replacement = lines.map(line => `  ${line}`).join('\n'); 
+		editor.replaceSelection(replacement);
 	}
 
 	function outdent() {
-		var selection = editor.getSelection(); // get the selected text
-		var lines = selection.split('\n'); // split the selection into an array of lines
-		var replacement = lines.map(line => line.replace(/^  /, '')).join('\n'); // remove two spaces from the start of each line
-		editor.replaceSelection(replacement); // replace the selection with the new text
+		var selection = editor.getSelection();
+		var lines = selection.split('\n');
+		var replacement = lines.map(line => line.replace(/^  /, '')).join('\n');
+		editor.replaceSelection(replacement);
 	}
 
 	function undo() {
-		document.scrollTop = 0; // scroll to the top
-		editor.undo(); // undo last edit
+		editor.undo();
 	}
 
 	function redo() {
-		editor.redo(); // redo last edit
+		editor.redo();
 	}
 
 	function editor_clear() {
@@ -440,23 +544,55 @@
 	}
 
 	function bold() {
-	var selection = editor.getSelection(); // get the selected text
-	if (selection.includes('**')) { // if the selection contains bold formatting
-		var replacement = selection.replace(/\*\*/g, ''); // remove bold formatting
-	} else { // otherwise
-		var replacement = '**' + selection + '**'; // add bold formatting
+	var selection = editor.getSelection();
+	if (selection.includes('**')) { 
+		var replacement = selection.replace(/\*\*/g, '');
+	} else {
+		var replacement = '**' + selection + '**';
 	}
-	editor.replaceSelection(replacement); // replace the selection with the new text
+	editor.replaceSelection(replacement);
 	}
 
 	function italic() {
-	var selection = editor.getSelection(); // get the selected text
-	if (selection.includes('_')) { // if the selection contains italics formatting
-		var replacement = selection.replace(/_/g, ''); // remove italics formatting
-	} else { // otherwise
-		var replacement = '_' + selection + '_'; // add italics formatting
+	var selection = editor.getSelection();
+	if (selection.includes('_')) {
+		var replacement = selection.replace(/_/g, '');
+	} else {
+		var replacement = '_' + selection + '_';
 	}
-	editor.replaceSelection(replacement); // replace the selection with the new text
+	editor.replaceSelection(replacement);
+	}
+
+	function header_bigger() {
+	var selection = editor.getSelection();
+	if (selection.includes('#')) {
+		var replacement = '#' + selection;
+	} else {
+		var replacement = '# ' + selection; 
+	}
+	editor.replaceSelection(replacement);
+	}
+
+	function header_smaller() {
+		var selection = editor.getSelection(); 
+		var count = (selection.match(/#/g) || []).length; 
+		if (count > 1) {
+			var replacement = selection.replace(/#/, '');
+		} else { 
+			var replacement = selection.replace(/#\s/, '');
+		}
+		editor.replaceSelection(replacement);
+	}
+
+	var headings = preview.querySelectorAll("h1, h2");
+
+	for (var i = 0; i < headings.length; i++) {
+	var hr = document.createElement("hr");
+	var nextSibling = headings[i].nextSibling;
+	while (nextSibling && nextSibling.nodeType !== Node.TEXT_NODE && nextSibling.nodeType !== Node.ELEMENT_NODE) {
+		nextSibling = nextSibling.nextSibling;
+	}
+	headings[i].parentNode.insertBefore(hr, nextSibling);
 	}
 
 	</script>
